@@ -936,6 +936,17 @@ a:hover {
   color: var(--text);
 }
 
+.data-btn--rescue {
+  border-color: rgba(255, 181, 69, 0.28);
+  color: var(--amber);
+}
+
+.data-btn--rescue:hover {
+  border-color: rgba(255, 181, 69, 0.62);
+  background: rgba(255, 181, 69, 0.08);
+  color: #ffe3b3;
+}
+
 .data-note {
   margin: 10px 0 0;
   color: var(--muted-2);

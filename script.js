@@ -494,6 +494,7 @@
     newGame: $("new-game"),
     saveScores: $("save-scores"),
     loadScores: $("load-scores"),
+    rescueBall: $("rescue-ball"),
     scoreFile: $("score-file"),
     launchBtn: $("launch-btn"),
     launchHint: $("launch-hint"),
@@ -1342,9 +1343,9 @@
      ========================================================================== */
 
   var bumperDefs = [
-    { x: -2.5, z: -3.4, color: 0x35f0ff, name: "CYAN" },
+    { x: -1.7, z: -3.4, color: 0x35f0ff, name: "CYAN" },
     { x: 0.0, z: -5.4, color: 0xff3bdc, name: "MAGENTA" },
-    { x: 2.5, z: -3.4, color: 0x9d6bff, name: "VIOLET" }
+    { x: 1.7, z: -3.4, color: 0x9d6bff, name: "VIOLET" }
   ];
   var targetPositions = [-3.3, -2.1, -0.9, 0.3];
   var targetZ = 1.45;
@@ -1627,7 +1628,7 @@
   }
 
   function buildPegs() {
-    [[-3.7, 2.7, 0x5ff6ff], [3.05, -1.0, 0xff3bdc], [-1.35, -8.9, 0x9d6bff]].forEach(function (p) {
+    [[-3.7, 2.7, 0x5ff6ff], [2.2, -1.0, 0xff3bdc], [-1.35, -8.9, 0x9d6bff]].forEach(function (p) {
       var peg = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 1.15, 10), MAT.chassisEdge);
       peg.position.set(p[0], 0.575, p[1]);
       addMesh(peg);
@@ -1756,7 +1757,7 @@
       group.add(label);
 
       var body = new CANNON.Body({ mass: 0, material: phys.bumper });
-      body.addShape(new CANNON.Cylinder(0.98, 0.98, 1.3, 16));
+      body.addShape(new CANNON.Cylinder(0.9, 0.9, 1.3, 16));
       body.position.set(def.x, 0.65, def.z);
       body.userData = { kind: "bumper", index: index, cooldown: 0 };
       world.addBody(body);
@@ -1913,6 +1914,17 @@
   }
 
   function resetTargets(silent) {
+    // Never re-arm a node on top of a live ball: that is a classic pinball trap.
+    if (!silent && game.phase === "play" && ball && !ball.onRail) {
+      var bp = ball.body.position;
+      for (var i = 0; i < targets.length; i++) {
+        if (Math.abs(bp.x - targets[i].x) < 1.05 && Math.abs(bp.z - targetZ) < 1.05 && bp.y < 1.3) {
+          clearTargetReset();
+          targetResetTimer = schedule(resetTargets, 900);
+          return;
+        }
+      }
+    }
     targets.forEach(function (target) {
       target.down = false;
       target.sink = 0;
@@ -1944,7 +1956,7 @@
 
   function buildSlingshots() {
     [-1, 1].forEach(function (side) {
-      var x = side * 2.8;
+      var x = side * 1.95;
       var z = 5.8;
       var rot = side * -0.68;
       var mat = new THREE.MeshStandardMaterial({
@@ -1954,11 +1966,11 @@
         metalness: 0.8,
         roughness: 0.28
       });
-      var mesh = new THREE.Mesh(new THREE.BoxGeometry(1.45, 1.0, 0.4), mat);
+      var mesh = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.0, 0.4), mat);
       mesh.position.set(x, 0.55, z);
       mesh.rotation.y = rot;
       addMesh(mesh);
-      var strip = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.055, 0.07), pureNeon(0xff3bdc, 0.9));
+      var strip = new THREE.Mesh(new THREE.BoxGeometry(1.45, 0.055, 0.07), pureNeon(0xff3bdc, 0.9));
       strip.position.set(x, 1.07, z);
       strip.rotation.y = rot;
       tableGroup.add(strip);
@@ -1979,7 +1991,7 @@
         cooldown: 0
       };
 
-      var body = addStaticBox(0.72, 0.5, 0.2, x, 0.55, z, phys.sling, rot, { kind: "sling", side: side });
+      var body = addStaticBox(0.68, 0.5, 0.2, x, 0.55, z, phys.sling, rot, { kind: "sling", side: side });
       sling.body = body;
       body.addEventListener("collide", function (event) {
         if (event.body !== ball.body || game.phase !== "play" || sling.cooldown > 0) return;
@@ -2205,8 +2217,8 @@
       railT: 0,
       railSpeed: 0,
       lastSound: 0,
-      stuckTime: 0,
-      lastPos: new THREE.Vector3(4.3, TABLE.ballR, 9.35)
+      recoveryTimer: 0,
+      recoveryAnchor: new THREE.Vector3(4.3, TABLE.ballR, 9.35)
     };
 
     body.addEventListener("collide", function (event) {
@@ -2353,9 +2365,9 @@
     b.wakeUp();
     ball.onRail = null;
     ball.railT = 0;
-    ball.stuckTime = 0;
+    ball.recoveryTimer = 0;
+    ball.recoveryAnchor.set(b.position.x, b.position.y, b.position.z);
     ball.history.length = 0;
-    ball.lastPos.set(b.position.x, b.position.y, b.position.z);
     ball.mesh.position.set(b.position.x, b.position.y, b.position.z);
     setBallVisible(true);
     game.charge = 0;
@@ -2843,6 +2855,68 @@
      13. Simulation loop
      ========================================================================== */
 
+  function updateBallRecovery(dt) {
+    if (!ball || game.phase !== "play") {
+      if (ball) ball.recoveryTimer = 0;
+      return;
+    }
+    if (ball.onRail || inShooterLane()) {
+      ball.recoveryTimer = 0;
+      return;
+    }
+    // Do not interrupt a deliberate cradle while a flipper is held up.
+    if (flippers.left.active || flippers.right.active) {
+      ball.recoveryTimer = 0;
+      return;
+    }
+    var p = ball.body.position;
+    var dx = p.x - ball.recoveryAnchor.x;
+    var dz = p.z - ball.recoveryAnchor.z;
+    if (dx * dx + dz * dz > 0.64) {
+      ball.recoveryAnchor.set(p.x, p.y, p.z);
+      ball.recoveryTimer = 0;
+      return;
+    }
+    ball.recoveryTimer += dt;
+    if (ball.recoveryTimer >= 3.5) {
+      recoverBall("auto");
+    }
+  }
+
+  function recoverBall(source) {
+    source = source || "manual";
+    if (!ball) return false;
+    if (game.phase === "ready") {
+      if (source === "manual") toast("BALL ALREADY IN THE RAILGUN", "amber", 1700);
+      return false;
+    }
+    if (game.phase !== "play") {
+      if (source === "manual") toast("NO ACTIVE BALL TO RECOVER", "amber", 1700);
+      return false;
+    }
+
+    var p = ball.body.position;
+    burstSparks(p.x, p.y + 0.2, p.z, 0x5ff6ff, 20, 4.0);
+    game.isCharging = false;
+    game.charge = 0;
+    game.pointerId = null;
+    game.pointerBoost = 0;
+    synth.stopCharge();
+    dom.launchBtn.classList.remove("is-charging");
+    synth.ensure();
+    synth.tone({ freq: 220, endFreq: 880, type: "triangle", dur: 0.34, gain: 0.1 });
+    synth.tone({ freq: 110, endFreq: 55, type: "sine", dur: 0.24, gain: 0.08 });
+    ball.onRail = null;
+    ball.recoveryTimer = 0;
+    ball.history.length = 0;
+    spawnBall();
+    game.shake = Math.max(game.shake, 0.2);
+    toast(source === "auto" ? "BALL RECOVERED · TRAP CLEARED · RELAUNCH" : "BALL RECOVERED · RELAUNCH", "amber", 3000);
+    announce("Ball recovered to the shooter lane. Relaunch when ready.");
+    updateHUD(false);
+    return true;
+  }
+
   var accumulator = 0;
   var lastFrame = performance.now();
   var lastHudUpdate = 0;
@@ -2897,26 +2971,7 @@
       if (outside || inDrain) {
         loseBall();
       } else {
-        // Stuck-ball rescue
-        var dx = p.x - ball.lastPos.x;
-        var dz = p.z - ball.lastPos.z;
-        var moved = Math.sqrt(dx * dx + dz * dz);
-        if (speed < 0.22 && moved < 0.08) {
-          ball.stuckTime += dt;
-          if (ball.stuckTime > 5.5) {
-            ball.stuckTime = 0;
-            if (inShooterLane()) {
-              ball.body.position.set(4.3, TABLE.ballR + 0.12, 9.35);
-              ball.body.velocity.set(0, 0, 0);
-            } else {
-              ball.body.applyImpulse(new CANNON.Vec3(rand(-0.25, 0.25), 0.2, rand(-0.35, -0.1)), new CANNON.Vec3(0, 0, 0));
-            }
-            toast("BALL UNSTUCK · TABLE NUDGED", "amber", 1600);
-          }
-        } else {
-          ball.stuckTime = 0;
-        }
-        ball.lastPos.set(p.x, p.y, p.z);
+        updateBallRecovery(dt);
       }
     }
 
@@ -3160,6 +3215,9 @@
     dom.gameoverSave.addEventListener("click", exportScores);
     dom.saveScores.addEventListener("click", exportScores);
     dom.loadScores.addEventListener("click", function () { dom.scoreFile.click(); });
+    if (dom.rescueBall) {
+      dom.rescueBall.addEventListener("click", function () { recoverBall("manual"); });
+    }
     dom.scoreFile.addEventListener("change", function () {
       importScoresFile(dom.scoreFile.files && dom.scoreFile.files[0]);
     });
@@ -3333,6 +3391,13 @@
       if (!event.repeat) setFlipper("left", true);
       return;
     }
+    if (key === "r" || key === "R") {
+      event.preventDefault();
+      if (gameStarted && dom.helpOverlay.hidden && dom.confirmOverlay.hidden && dom.gameoverOverlay.hidden) {
+        recoverBall("manual");
+      }
+      return;
+    }
     if ((key === "h" || key === "H" || key === "?") && gameStarted) {
       event.preventDefault();
       if (dom.gameoverOverlay.hidden && dom.confirmOverlay.hidden) openHelp();
@@ -3499,6 +3564,7 @@
         scoreStore: scoreStore,
         startGame: startGame,
         launchBall: launchBall,
+        recoverBall: recoverBall,
         setFlipper: setFlipper,
         addScore: addScore,
         exportScores: exportScores,

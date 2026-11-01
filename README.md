@@ -51,7 +51,8 @@ The result runs directly from `index.html` and deploys cleanly to GitHub Pages.
 - **Railgun launch accelerator** — hold **Space** (or hold/drag the on-screen **LAUNCH** pad) to compress the spring. The charge meter fills, the charge oscillator rises in pitch and the plunger physically pulls back. Release to apply a linear impulse up the shooter lane.
 - **Dual flippers** — left **Z / ←**, right **/ / →**. Kinematic bodies rotate around their pivot at a controlled angular velocity; the moving arm imparts momentum through the solver. Active flippers light their neon edge.
 - **120 Hz fixed-step simulation** — an accumulator keeps the simulation stable at any display rate, with a speed clamp that prevents tunnelling.
-- **Live table behaviour** — bumper kicks, slingshot kicks, drain detection, stuck-ball rescue, camera shake, spark bursts and neon light flashes.
+- **Anti-trap recovery** — a displacement watchdog detects a ball that has stopped making progress (without interrupting a deliberate flipper cradle). It returns the ball to the shooter lane, preserving the score and ball count. The right-side clearances between the bumper/sling/peg and the shooter-lane divider are tuned above one ball diameter so the ball cannot wedge there, and a manual **R / RECOVER STUCK BALL** control is always available.
+- **Live table behaviour** — bumper kicks, slingshot kicks, drain detection, camera shake, spark bursts and neon light flashes.
 
 ### Playfield features
 
@@ -101,6 +102,7 @@ The result runs directly from `index.html` and deploys cleanly to GitHub Pages.
 | Right flipper | `/` or `→` | Right **FLIP** pad, or tap/click the right half |
 | Charge railgun | Hold `Space` | Hold the **LAUNCH** pad; drag upward to add charge |
 | Launch ball | Release `Space` | Release the **LAUNCH** pad |
+| Recover stuck ball | `R` | **RECOVER STUCK BALL** in the scores panel |
 | Mute / unmute | `M` | Audio button |
 | Help | `H` or `?` | `?` button |
 | New game | — | **NEW GAME** button |
@@ -231,6 +233,12 @@ Each flipper is a **kinematic** body with a box shape offset from its pivot. Eve
 
 The loops are visual `TubeGeometry` curves plus a trigger sphere at the entrance. On entry the ball becomes kinematic and is moved along a `CatmullRomCurve3` for a short ride; at the exit it becomes dynamic again and receives a tangent impulse toward the flippers. This gives a reliable, readable loop without fragile tube colliders.
 
+### Anti-trap recovery
+
+Narrow gaps are the enemy of a pinball table. The right-side bumper, sling and peg are deliberately kept more than one ball diameter away from the shooter-lane divider, and the drop-target bank will not re-arm on top of a live ball.
+
+As a final safety net, the ball's position is sampled against a rolling anchor. If it stays within a 0.8-unit circle for 3.5 seconds while neither flipper is held, `recoverBall()` returns it to the shooter lane without spending a ball or resetting the score. A deliberate flipper cradle resets the watchdog, and **R** / **RECOVER STUCK BALL** triggers the same recovery manually.
+
 ---
 
 ## Data & persistence
@@ -299,6 +307,8 @@ Automated Chrome end-to-end runs additionally verified:
 - Left/right flipper motion and ball momentum transfer.
 - Slingshot hits.
 - Drain → ball countdown → respawn.
+- Right-side wedge clearance at the bumper, slingshot and peg against the shooter-lane divider.
+- Automatic anti-trap recovery after 3.5 s of no progress, and manual recovery via **R** and the **RECOVER STUCK BALL** button, with score and ball count preserved.
 - Three-ball game over, auto-archive, final summary and leaderboard rank.
 - `neon_horizon_scores.json` export and a merge import with invalid entries rejected.
 - Callsign persistence and audio mute persistence.

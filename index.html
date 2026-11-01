@@ -75,6 +75,7 @@
         <li><span class="keycap">Z</span><span class="keycap">←</span><span class="key-desc">Left flipper</span></li>
         <li><span class="keycap">/</span><span class="keycap">→</span><span class="key-desc">Right flipper</span></li>
         <li><span class="keycap keycap--wide">SPACE</span><span class="key-desc">Hold / release plunger</span></li>
+        <li><span class="keycap">R</span><span class="key-desc">Recover stuck ball</span></li>
         <li><span class="keycap">M</span><span class="key-desc">Mute synthesizer</span></li>
       </ul>
       <div class="divider"></div>
@@ -99,6 +100,9 @@
       </ol>
       <div class="divider"></div>
       <div class="data-ops">
+        <button class="data-btn data-btn--rescue" id="rescue-ball" type="button" title="Recover a stuck ball to the shooter lane (R)">
+          <span>↻</span> RECOVER STUCK BALL
+        </button>
         <button class="data-btn" id="save-scores" type="button" title="Download neon_horizon_scores.json">
           <span>💾</span> SAVE HIGH SCORE
         </button>
@@ -221,7 +225,7 @@
         </article>
         <article>
           <h3><span>04</span> SURVIVE</h3>
-          <p>Three balls per session. Save your score archive from the right-hand panel and load it on any device. <b>M</b> toggles the synthesizer.</p>
+          <p>Three balls per session. If a ball ever wedges in a corner, press <b>R</b> or use <b>RECOVER STUCK BALL</b> to return it to the railgun. Save your score archive from the right-hand panel and load it on any device. <b>M</b> toggles the synthesizer.</p>
         </article>
       </div>
       <div class="modal__actions">

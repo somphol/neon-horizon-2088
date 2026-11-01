@@ -4,19 +4,19 @@
   "description": "A complete, production-ready interactive 3D cyberpunk pinball game in vanilla HTML/CSS/ES6, rendered with Three.js r128 and simulated with Cannon.js 0.6.2.",
   "build": {
     "startedAt": "2026-11-01T03:47:45Z",
-    "completedAt": "2026-11-01T04:34:10Z",
-    "durationSeconds": 2784,
-    "durationHuman": "46m 24s",
+    "completedAt": "2026-11-01T04:49:14Z",
+    "durationSeconds": 3688,
+    "durationHuman": "1h 1m 28s",
     "timezone": "UTC"
   },
   "tokens": {
-    "input": 463762,
-    "output": 118984,
-    "reasoning": 102748,
-    "cacheRead": 44503936,
+    "input": 536208,
+    "output": 136830,
+    "reasoning": 133503,
+    "cacheRead": 60157568,
     "cacheWrite": 1218,
-    "total": 685494,
-    "totalWithCache": 45190648,
+    "total": 806541,
+    "totalWithCache": 60965327,
     "note": "Snapshot from the OpenCode session record when the project was packaged. total = input + output + reasoning. Cache reads/writes are reported separately because they are context-usage figures and are not added to the model-token total."
   },
   "cost": {
@@ -59,7 +59,10 @@
       "responsive HUD",
       "mobile touch controls",
       "camera shake",
-      "spark particles"
+      "spark particles",
+      "automatic anti-trap recovery",
+      "manual R / RECOVER STUCK BALL recovery",
+      "right-side wedge clearances"
     ],
     "controls": [
       "Space hold/release launch",
@@ -86,7 +89,10 @@
       "callsign, mute and leaderboard persistence",
       "mobile touch launch and flippers",
       "viewport resize 1600x1000 / 768x1024 / 390x844 / 320x568",
-      "zero uncaught exceptions and zero console errors"
+      "zero uncaught exceptions and zero console errors",
+      "right-side bumper/sling/peg clearance against the shooter-lane divider",
+      "automatic anti-trap recovery after 3.5 s of no progress",
+      "manual R key and RECOVER STUCK BALL button preserve score and ball count"
     ],
     "screenshots": [
       "screenshot.png (1600x1000)",
@@ -96,31 +102,31 @@
   },
   "files": {
     "index.html": {
-      "bytes": 13619,
-      "lines": 259
+      "bytes": 14025,
+      "lines": 263
     },
     "style.css": {
-      "bytes": 43864,
-      "lines": 1926
+      "bytes": 44081,
+      "lines": 1937
     },
     "script.js": {
-      "bytes": 124776,
-      "lines": 3583
+      "bytes": 126909,
+      "lines": 3649
     },
     "README.md": {
-      "bytes": 16165,
-      "lines": 343
+      "bytes": 17570,
+      "lines": 353
     },
     "screenshot.png": {
-      "bytes": 838590,
+      "bytes": 841557,
       "lines": 0
     },
     "screenshot-mobile.png": {
-      "bytes": 780163,
+      "bytes": 779100,
       "lines": 0
     },
     "screenshot-start.png": {
-      "bytes": 564346,
+      "bytes": 568112,
       "lines": 0
     }
   },
