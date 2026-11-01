@@ -1,13 +1,19 @@
+<div align="center">
+
+<img src="docs/social-card.png" alt="NEON HORIZON 2088 — Cyberpunk 3D Pinball Studio" width="100%" />
+
 # NEON HORIZON 2088
 
-**Cyberpunk 3D Pinball Studio** — a complete, production-ready 3D pinball game for the browser. No game engine, no pre-rendered art, no audio files: just Three.js, Cannon.js, a stack of procedural textures and a very overcharged playfield.
+**Cyberpunk 3D Pinball Studio**
 
-[![Play it live](https://img.shields.io/badge/PLAY-LIVE%20DEMO-ff3bdc?style=for-the-badge&labelColor=05070f)](https://somphol.github.io/neon-horizon-2088/)
-[![Three.js](https://img.shields.io/badge/THREE.JS-r128-5ff6ff?style=for-the-badge&labelColor=05070f)](https://threejs.org/)
-[![Cannon.js](https://img.shields.io/badge/CANNON.JS-0.6.2-a888ff?style=for-the-badge&labelColor=05070f)](https://schteppe.github.io/cannon.js/)
-[![License](https://img.shields.io/badge/LICENSE-MIT-ffb545?style=for-the-badge&labelColor=05070f)](LICENSE)
+A chrome fusion ball, responsive flippers, and a fully procedural neon playfield running at 120 Hz simulated physics.
 
-![NEON HORIZON 2088 gameplay](screenshot.png)
+[![Live demo](https://img.shields.io/badge/live_demo-online-ff3bdc?style=flat-square)](https://somphol.github.io/neon-horizon-2088/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-ff3bdc?style=flat-square)](LICENSE)
+
+**[Try it live →](https://somphol.github.io/neon-horizon-2088/)**
+
+</div>
 
 ---
 
