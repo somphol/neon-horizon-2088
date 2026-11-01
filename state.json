@@ -1,0 +1,158 @@
+{
+  "project": "neon-horizon-2088",
+  "title": "NEON HORIZON 2088 — Cyberpunk 3D Pinball Studio",
+  "description": "A complete, production-ready interactive 3D cyberpunk pinball game in vanilla HTML/CSS/ES6, rendered with Three.js r128 and simulated with Cannon.js 0.6.2.",
+  "build": {
+    "startedAt": "2026-11-01T03:47:45Z",
+    "completedAt": "2026-11-01T04:34:10Z",
+    "durationSeconds": 2784,
+    "durationHuman": "46m 24s",
+    "timezone": "UTC"
+  },
+  "tokens": {
+    "input": 463762,
+    "output": 118984,
+    "reasoning": 102748,
+    "cacheRead": 44503936,
+    "cacheWrite": 1218,
+    "total": 685494,
+    "totalWithCache": 45190648,
+    "note": "Snapshot from the OpenCode session record when the project was packaged. total = input + output + reasoning. Cache reads/writes are reported separately because they are context-usage figures and are not added to the model-token total."
+  },
+  "cost": {
+    "usd": 0.0,
+    "note": "As reported by the OpenCode session record."
+  },
+  "sessionId": "ses_e6ac7942effe0GS7Yi86hbJntl",
+  "model": {
+    "name": "DeepSeek V4.1 Flash",
+    "providerID": "opencode-go",
+    "modelID": "deepseek-v4.1-flash"
+  },
+  "harness": {
+    "name": "OpenCode",
+    "version": "2.2.5"
+  },
+  "repository": "https://github.com/somphol/neon-horizon-2088",
+  "pages": "https://somphol.github.io/neon-horizon-2088/",
+  "game": {
+    "engine": "Three.js r128 + Cannon.js 0.6.2",
+    "physicsHz": 120,
+    "table": "inclined glass-topped cabinet, 6.6° slope, 10 × 22 units",
+    "balls": 3,
+    "extraBallAt": 100000,
+    "plasmaCores": 3,
+    "dropTargets": 4,
+    "hyperLoops": 2,
+    "flippers": 2,
+    "features": [
+      "railgun plunger",
+      "chrome fusion ball with trail",
+      "neon flash bumpers",
+      "drop-target multiplier bank",
+      "hyper-loop rail ride",
+      "slingshots",
+      "drain",
+      "synthesised audio",
+      "localStorage leaderboard",
+      "JSON score export/import",
+      "responsive HUD",
+      "mobile touch controls",
+      "camera shake",
+      "spark particles"
+    ],
+    "controls": [
+      "Space hold/release launch",
+      "Z / Left arrow: left flipper",
+      "/ / Right arrow: right flipper",
+      "M mute",
+      "H/? help",
+      "touch flip pads and hold-drag launch pad"
+    ]
+  },
+  "verification": {
+    "selfTest": "16/16",
+    "browser": "Headless Chrome (SwiftShader) automated end-to-end runs",
+    "checks": [
+      "railgun launch and curved lane guide",
+      "hyper-loop capture, ride and release",
+      "plasma core hit, flash, sparks and kick",
+      "drop target hit, bank clear, multiplier and re-arm",
+      "left/right flipper motion",
+      "slingshot hits",
+      "drain, ball countdown and respawn",
+      "three-ball game over, archive and final summary",
+      "score export to neon_horizon_scores.json and merge import",
+      "callsign, mute and leaderboard persistence",
+      "mobile touch launch and flippers",
+      "viewport resize 1600x1000 / 768x1024 / 390x844 / 320x568",
+      "zero uncaught exceptions and zero console errors"
+    ],
+    "screenshots": [
+      "screenshot.png (1600x1000)",
+      "screenshot-mobile.png (390x844 @2x)",
+      "screenshot-start.png (1600x1000)"
+    ]
+  },
+  "files": {
+    "index.html": {
+      "bytes": 13619,
+      "lines": 259
+    },
+    "style.css": {
+      "bytes": 43864,
+      "lines": 1926
+    },
+    "script.js": {
+      "bytes": 124776,
+      "lines": 3583
+    },
+    "README.md": {
+      "bytes": 16165,
+      "lines": 343
+    },
+    "screenshot.png": {
+      "bytes": 838590,
+      "lines": 0
+    },
+    "screenshot-mobile.png": {
+      "bytes": 780163,
+      "lines": 0
+    },
+    "screenshot-start.png": {
+      "bytes": 564346,
+      "lines": 0
+    }
+  },
+  "credits": [
+    {
+      "role": "Built with",
+      "name": "OpenCode",
+      "version": "2.2.5",
+      "url": "https://opencode.ai"
+    },
+    {
+      "role": "Model",
+      "name": "DeepSeek V4.1 Flash",
+      "id": "opencode-go/deepseek-v4.1-flash"
+    },
+    {
+      "role": "Rendering",
+      "name": "Three.js r128",
+      "license": "MIT",
+      "url": "https://threejs.org/"
+    },
+    {
+      "role": "Physics",
+      "name": "Cannon.js 0.6.2",
+      "license": "MIT",
+      "url": "https://schteppe.github.io/cannon.js/"
+    },
+    {
+      "role": "Typography",
+      "name": "Orbitron & Rajdhani",
+      "license": "SIL OFL 1.1",
+      "url": "https://fonts.google.com/"
+    }
+  ]
+}
