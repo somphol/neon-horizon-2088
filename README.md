@@ -50,6 +50,9 @@ The result runs directly from `index.html` and deploys cleanly to GitHub Pages.
 - **Chrome fusion ball** — a high-metalness sphere with a procedurally generated reflection environment, a soft light attached to the ball, a pulsing halo and a comet trail. Zero-friction wall contacts and high restitution keep bounces lively.
 - **Railgun launch accelerator** — hold **Space** (or hold/drag the on-screen **LAUNCH** pad) to compress the spring. The charge meter fills, the charge oscillator rises in pitch and the plunger physically pulls back. Release to apply a linear impulse up the shooter lane.
 - **Dual flippers** — left **Z / ←**, right **/ / →**. Kinematic bodies rotate around their pivot at a controlled angular velocity; the moving arm imparts momentum through the solver. Active flippers light their neon edge.
+- **A real lower third** — slingshots angled inward like a standard Italian-bottom table, each with a snap kick toward the centre and up-table. Return guides catch side balls and feed them back to the flippers instead of escorting them down an outlane.
+- **Sealed side lanes** — the narrow outlanes beside the flippers are closed by guide posts and side rails, so the only drain is the centre gap between the flipper tips. The table is deliberately more forgiving than a real machine.
+- **Bouncy cabinet** — side-wall restitution is 0.8, so the ball visibly rebounds off the left and right walls. A real glass-ceiling collider stops hard flipper or bumper pops from launching the ball over the rails.
 - **120 Hz fixed-step simulation** — an accumulator keeps the simulation stable at any display rate, with a speed clamp that prevents tunnelling.
 - **Anti-trap recovery** — a displacement watchdog detects a ball that has stopped making progress (without interrupting a deliberate flipper cradle). It returns the ball to the shooter lane, preserving the score and ball count. The right-side clearances between the bumper/sling/peg and the shooter-lane divider are tuned above one ball diameter so the ball cannot wedge there, and a manual **R / RECOVER STUCK BALL** control is always available.
 - **Live table behaviour** — bumper kicks, slingshot kicks, drain detection, camera shake, spark bursts and neon light flashes.
@@ -61,8 +64,8 @@ The result runs directly from `index.html` and deploys cleanly to GitHub Pages.
 | **3 Quantum Plasma Cores** | Cyan, magenta and electric-violet cylinder bumpers. A ball impact adds score, flashes a point light, pulses the core/ring scale, emits sparks and kicks the ball outward. |
 | **Cyber Security Nodes** | Four vertical drop targets. Each hit sinks a node and scores. Clearing the whole bank raises the multiplier (up to ×8), awards a bonus and re-arms the bank after a short delay. |
 | **Hyper-Loops** | Two translucent neon-purple wire tubes. The ball is captured at the glowing entrance, rides the curve with a rising synth whoosh, then is released toward the flippers with a bonus. |
-| **Slingshots** | Angled live kickers above the flippers, with magenta flash and a short cooldown. |
-| **Outlanes & drain** | The funnel walls, flipper gap and drain line are real colliders. Three balls per session; the game over screen archives the score. |
+| **Slingshots** | Angled inward/up-table live kickers above the flippers, with a strong snap, magenta flash and a short cooldown. |
+| **Inlane returns & drain** | Lower return guides catch side balls and feed the flippers. The side outlanes are sealed, so only the centre flipper gap drains. Three balls per session; the game over screen archives the score. |
 | **Extra ball** | Cross 100,000 points for one extra ball, once per session. |
 
 ### Audio
@@ -223,11 +226,17 @@ while (accumulator >= 1 / 120 && steps < 6) {
 }
 ```
 
-The solver runs 22 iterations with a speed clamp of 28 units/s. The ball is a sphere with low damping; wall contacts use zero friction and 0.62 restitution, bumper contacts use 0.9 restitution, and the playfield uses just enough friction to make the ball roll naturally.
+The solver runs 22 iterations with a speed clamp of 28 units/s. The ball is a sphere with low damping; wall contacts use zero friction and 0.8 restitution, bumper contacts use 0.92 restitution, and the playfield uses just enough friction to make the ball roll naturally.
 
 ### Flippers
 
 Each flipper is a **kinematic** body with a box shape offset from its pivot. Every physics step the target angle (rest or active) is approached at a capped angular velocity; the body quaternion and `angularVelocity` are updated before `world.step`, so the moving arm transfers momentum to the ball through the solver. The same angle drives the visual arm, so there is no render/physics drift.
+
+### Lower third
+
+The layout follows the standard pinball “Italian bottom”: two flippers, two slingshots above them, inlane guide rails, and outlane posts on the far sides. In this arcade build the narrow outlanes are sealed, so a ball that comes down the side is returned to the flippers rather than lost. Slingshots kick inward and up-table, and the outer walls use 0.8 restitution so side impacts are lively rather than sticky. A glass-ceiling collider keeps airborne balls on the table.
+
+The lower-third proportions were checked against the standard Gottlieb Mustang / modern Stern SIO (slingshot–inlane–outlane) layout documented in the [Pinball Makers construction guide](https://pinballmakers.com/wiki/Construction).
 
 ### Hyper-Loop rail
 
@@ -308,6 +317,11 @@ Automated Chrome end-to-end runs additionally verified:
 - Slingshot hits.
 - Drain → ball countdown → respawn.
 - Right-side wedge clearance at the bumper, slingshot and peg against the shooter-lane divider.
+- Left and right wall rebound: the ball leaves the wall with reversed horizontal velocity instead of sticking.
+- Side return guides feed balls from the side rails back to the flippers. A 25-second random run produced no side drains.
+- Sealed side outlanes, with a forced centre drain still starting the ball-countdown and game-over flow.
+- Glass-ceiling collision and table-escape recovery: a ball popped upward stays under the glass; a ball that leaves the cabinet is returned to the railgun without losing a ball.
+- Upright cylinder colliders for the plasma cores and pegs, and inward/up-table slingshot snap kicks.
 - Automatic anti-trap recovery after 3.5 s of no progress, and manual recovery via **R** and the **RECOVER STUCK BALL** button, with score and ball count preserved.
 - Three-ball game over, auto-archive, final summary and leaderboard rank.
 - `neon_horizon_scores.json` export and a merge import with invalid entries rejected.

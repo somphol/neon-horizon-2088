@@ -1607,7 +1607,10 @@
       tableGroup.add(strip);
     }
 
-    // Outlane funnels toward the drain
+    // Lower side return guides. These replace the old outlane funnels: a ball
+    // coming down the side wall is deflected back toward the flippers instead
+    // of being escorted straight to the drain. The rounded end posts keep the
+    // guide from forming a sharp pinch point.
     function angledWall(x1, z1, x2, z2, color) {
       var dx = x2 - x1, dz = z2 - z1;
       var len = Math.sqrt(dx * dx + dz * dz);
@@ -1618,8 +1621,49 @@
       strip.rotation.y = ang;
       tableGroup.add(strip);
     }
-    angledWall(-5.0, 6.25, -3.55, 8.55, 0xff3bdc);
-    // The right-hand shooter lane divider already forms this side of the playfield.
+
+    function returnPost(x, z, color) {
+      var post = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.21, 1.15, 12), MAT.chassisEdge);
+      post.position.set(x, 0.575, z);
+      addMesh(post);
+      var ring = new THREE.Mesh(new THREE.TorusGeometry(0.23, 0.04, 8, 18), neonMaterial(color, 1.9));
+      ring.rotation.x = Math.PI / 2;
+      ring.position.set(x, 1.16, z);
+      addMesh(ring, false, false);
+      var body = new CANNON.Body({ mass: 0, material: phys.wall });
+      addUprightCylinder(body, 0.18, 0.21, 1.15, 12);
+      body.position.set(x, 0.575, z);
+      body.userData = { kind: "wall" };
+      world.addBody(body);
+    }
+
+    function returnGuide(points, color) {
+      for (var i = 0; i < points.length - 1; i++) {
+        var a = points[i], b = points[i + 1];
+        angledWall(a[0], a[1], b[0], b[1], color);
+      }
+      var end = points[points.length - 1];
+      returnPost(end[0], end[1], color);
+    }
+
+    returnGuide([
+      [-4.95, 6.2], [-4.3, 6.5], [-3.65, 6.86], [-3.15, 7.25]
+    ], 0xff3bdc);
+    returnGuide([
+      [3.5, 6.2], [3.22, 6.55], [3.02, 6.92], [2.95, 7.25]
+    ], 0x5ff6ff);
+
+    // Seal the narrow outlane beside each flipper. The channel between this
+    // rail and the flipper pivot is narrower than a ball, so side drains are
+    // eliminated; the only way down is through the centre flipper gap.
+    function sideSeal(x, color) {
+      wall(0.1, 1.225, x, 8.475, 0, MAT.chassisEdge);
+      var strip = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.045, 2.4), pureNeon(color, 0.72));
+      strip.position.set(x, 1.26, 8.475);
+      tableGroup.add(strip);
+    }
+    sideSeal(-3.0, 0xff3bdc);
+    sideSeal(3.0, 0x5ff6ff);
 
     // Shooter lane bottom neon accent
     var laneBottom = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.06, 0.06), pureNeon(0xff3bdc, 0.8));
@@ -1639,7 +1683,7 @@
       addMesh(ring, false, false);
 
       var body = new CANNON.Body({ mass: 0, material: phys.wall });
-      body.addShape(new CANNON.Cylinder(0.27, 0.3, 1.15, 12));
+      addUprightCylinder(body, 0.27, 0.3, 1.15, 12);
       body.position.set(p[0], 0.575, p[1]);
       body.userData = { kind: "wall" };
       world.addBody(body);
@@ -1679,8 +1723,8 @@
     phys.sling = new CANNON.Material("sling");
 
     world.addContactMaterial(new CANNON.ContactMaterial(phys.ball, phys.table, { friction: 0.04, restitution: 0.16 }));
-    world.addContactMaterial(new CANNON.ContactMaterial(phys.ball, phys.wall, { friction: 0.0, restitution: 0.62 }));
-    world.addContactMaterial(new CANNON.ContactMaterial(phys.ball, phys.bumper, { friction: 0.0, restitution: 0.9 }));
+    world.addContactMaterial(new CANNON.ContactMaterial(phys.ball, phys.wall, { friction: 0.0, restitution: 0.8 }));
+    world.addContactMaterial(new CANNON.ContactMaterial(phys.ball, phys.bumper, { friction: 0.0, restitution: 0.92 }));
     world.addContactMaterial(new CANNON.ContactMaterial(phys.ball, phys.flipper, { friction: 0.04, restitution: 0.48 }));
     world.addContactMaterial(new CANNON.ContactMaterial(phys.ball, phys.target, { friction: 0.0, restitution: 0.4 }));
     world.addContactMaterial(new CANNON.ContactMaterial(phys.ball, phys.sling, { friction: 0.0, restitution: 0.65 }));
@@ -1691,6 +1735,14 @@
     floorBody.position.set(0, -0.3, 0);
     floorBody.userData = { kind: "table" };
     world.addBody(floorBody);
+
+    // The visual glass top is also a real ceiling. It keeps a hard flipper or
+    // bumper pop from launching the ball over the side rails and off the table.
+    var ceilingBody = new CANNON.Body({ mass: 0, material: phys.wall });
+    ceilingBody.addShape(new CANNON.Box(new CANNON.Vec3(5.1, 0.08, 11.0)));
+    ceilingBody.position.set(0, 2.8, 0);
+    ceilingBody.userData = { kind: "glass" };
+    world.addBody(ceilingBody);
   }
 
   function addStaticBox(hx, hy, hz, x, y, z, material, rotY, userData) {
@@ -1701,6 +1753,15 @@
     body.userData = userData || { kind: "wall" };
     world.addBody(body);
     return body;
+  }
+
+  // A Cannon.js Cylinder is built along Z. Rotate it so a visual upright post
+  // gets a genuinely upright collider.
+  function addUprightCylinder(body, radiusTop, radiusBottom, height, segments) {
+    var shape = new CANNON.Cylinder(radiusTop, radiusBottom, height, segments || 16);
+    var q = new CANNON.Quaternion();
+    q.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+    body.addShape(shape, new CANNON.Vec3(0, 0, 0), q);
   }
 
   /* ==========================================================================
@@ -1757,7 +1818,7 @@
       group.add(label);
 
       var body = new CANNON.Body({ mass: 0, material: phys.bumper });
-      body.addShape(new CANNON.Cylinder(0.9, 0.9, 1.3, 16));
+      addUprightCylinder(body, 0.9, 0.9, 1.3, 16);
       body.position.set(def.x, 0.65, def.z);
       body.userData = { kind: "bumper", index: index, cooldown: 0 };
       world.addBody(body);
@@ -1958,7 +2019,7 @@
     [-1, 1].forEach(function (side) {
       var x = side * 1.95;
       var z = 5.8;
-      var rot = side * -0.68;
+      var rot = side * 0.68;
       var mat = new THREE.MeshStandardMaterial({
         color: 0x0e1422,
         emissive: 0xff2bd6,
@@ -1999,14 +2060,12 @@
         try { impact = Math.abs(event.contact.getImpactVelocityAlongNormal()); } catch (err) { impact = 1.4; }
         if (impact < 1.0) return;
         sling.cooldown = 0.25;
-        var dx = ball.body.position.x - x;
-        var dz = ball.body.position.z - z;
-        var len = Math.sqrt(dx * dx + dz * dz) || 1;
-        var kick = 0.62 + clamp(impact * 0.025, 0, 0.4);
-        ball.body.applyImpulse(
-          new CANNON.Vec3((dx / len) * kick - side * 0.12, 0.05, (dz / len) * kick + 0.22),
-          new CANNON.Vec3(0, 0, 0)
-        );
+        var inward = side === -1 ? 1 : -1;
+        var kick = 2.9 + clamp(impact * 0.35, 0, 1.8);
+        ball.body.velocity.x = inward * kick + ball.body.velocity.x * 0.15;
+        ball.body.velocity.z = -2.7 - clamp(impact * 0.15, 0, 1.2) + ball.body.velocity.z * 0.15;
+        ball.body.velocity.y = Math.max(ball.body.velocity.y, 0.28);
+        ball.body.angularVelocity.set(ball.body.velocity.z / TABLE.ballR, 0, -ball.body.velocity.x / TABLE.ballR);
         sling.flash = 1;
         game.combo++;
         addScore(120, true);
@@ -2968,8 +3027,12 @@
 
       var outside = p.y < -2.5 || Math.abs(p.x) > 6.4 || p.z > 12.4 || p.z < -12.4;
       var inDrain = p.x < 3.55 && p.z > 9.7 && p.y < 1.6;
-      if (outside || inDrain) {
+      if (inDrain) {
         loseBall();
+      } else if (outside) {
+        // A ball that leaves the cabinet through a seam or over the top is a
+        // table fault, not a drain. Put it back in the railgun without charge.
+        recoverBall("auto");
       } else {
         updateBallRecovery(dt);
       }

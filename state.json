@@ -4,19 +4,19 @@
   "description": "A complete, production-ready interactive 3D cyberpunk pinball game in vanilla HTML/CSS/ES6, rendered with Three.js r128 and simulated with Cannon.js 0.6.2.",
   "build": {
     "startedAt": "2026-11-01T03:47:45Z",
-    "completedAt": "2026-11-01T04:49:14Z",
-    "durationSeconds": 3688,
-    "durationHuman": "1h 1m 28s",
+    "completedAt": "2026-11-01T05:15:53Z",
+    "durationSeconds": 5287,
+    "durationHuman": "1h 28m 7s",
     "timezone": "UTC"
   },
   "tokens": {
-    "input": 536208,
-    "output": 136830,
-    "reasoning": 133503,
-    "cacheRead": 60157568,
+    "input": 642355,
+    "output": 159876,
+    "reasoning": 189234,
+    "cacheRead": 81980288,
     "cacheWrite": 1218,
-    "total": 806541,
-    "totalWithCache": 60965327,
+    "total": 991465,
+    "totalWithCache": 82972971,
     "note": "Snapshot from the OpenCode session record when the project was packaged. total = input + output + reasoning. Cache reads/writes are reported separately because they are context-usage figures and are not added to the model-token total."
   },
   "cost": {
@@ -62,7 +62,15 @@
       "spark particles",
       "automatic anti-trap recovery",
       "manual R / RECOVER STUCK BALL recovery",
-      "right-side wedge clearances"
+      "right-side wedge clearances",
+      "bouncy 0.8-restitution side walls",
+      "glass ceiling collider",
+      "standard Italian-bottom lower third",
+      "inward/up-table slingshot snap",
+      "return guides that feed the flippers",
+      "sealed side outlanes with centre-only drain",
+      "upright cylinder colliders for cores and pegs",
+      "table-escape recovery"
     ],
     "controls": [
       "Space hold/release launch",
@@ -92,7 +100,15 @@
       "zero uncaught exceptions and zero console errors",
       "right-side bumper/sling/peg clearance against the shooter-lane divider",
       "automatic anti-trap recovery after 3.5 s of no progress",
-      "manual R key and RECOVER STUCK BALL button preserve score and ball count"
+      "manual R key and RECOVER STUCK BALL button preserve score and ball count",
+      "left/right wall rebound with reversed horizontal velocity",
+      "side return guides feed balls back to the flippers",
+      "sealed side outlanes; centre drain and three-ball game over still work",
+      "glass ceiling keeps popped balls on the table",
+      "table-escape recovery preserves the ball",
+      "inward/up-table slingshot snap kick",
+      "upright cylinder colliders for cores and pegs",
+      "25-second random run with no side drains"
     ],
     "screenshots": [
       "screenshot.png (1600x1000)",
@@ -110,23 +126,23 @@
       "lines": 1937
     },
     "script.js": {
-      "bytes": 126909,
-      "lines": 3649
+      "bytes": 129844,
+      "lines": 3712
     },
     "README.md": {
-      "bytes": 17570,
-      "lines": 353
+      "bytes": 19728,
+      "lines": 367
     },
     "screenshot.png": {
-      "bytes": 841557,
+      "bytes": 841136,
       "lines": 0
     },
     "screenshot-mobile.png": {
-      "bytes": 779100,
+      "bytes": 779331,
       "lines": 0
     },
     "screenshot-start.png": {
-      "bytes": 568112,
+      "bytes": 568146,
       "lines": 0
     }
   },
