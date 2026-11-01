@@ -52,7 +52,7 @@ The result runs directly from `index.html` and deploys cleanly to GitHub Pages.
 - **Dual flippers** — left **Z / ←**, right **/ / →**. Kinematic bodies rotate around their pivot at a controlled angular velocity; the moving arm imparts momentum through the solver. Active flippers light their neon edge.
 - **A real lower third** — slingshots angled inward like a standard Italian-bottom table, each with a snap kick toward the centre and up-table. Return guides catch side balls and feed them back to the flippers instead of escorting them down an outlane.
 - **Sealed side lanes** — the narrow outlanes beside the flippers are closed by guide posts and side rails, so the only drain is the centre gap between the flipper tips. The table is deliberately more forgiving than a real machine.
-- **Bouncy cabinet** — side-wall restitution is 0.8, so the ball visibly rebounds off the left and right walls. A real glass-ceiling collider stops hard flipper or bumper pops from launching the ball over the rails.
+- **Bouncy cabinet** — side-wall restitution is 0.8, so the ball visibly rebounds off the left and right walls. A real glass-ceiling collider stops hard flipper or bumper pops from launching the ball over the rails. A hard inner-face boundary and solid lower-side backstops catch any fast ball that would otherwise squeeze through a thin collider.
 - **120 Hz fixed-step simulation** — an accumulator keeps the simulation stable at any display rate, with a speed clamp that prevents tunnelling.
 - **Anti-trap recovery** — a displacement watchdog detects a ball that has stopped making progress (without interrupting a deliberate flipper cradle). It returns the ball to the shooter lane, preserving the score and ball count. The right-side clearances between the bumper/sling/peg and the shooter-lane divider are tuned above one ball diameter so the ball cannot wedge there, and a manual **R / RECOVER STUCK BALL** control is always available.
 - **Live table behaviour** — bumper kicks, slingshot kicks, drain detection, camera shake, spark bursts and neon light flashes.
@@ -321,6 +321,8 @@ Automated Chrome end-to-end runs additionally verified:
 - Side return guides feed balls from the side rails back to the flippers. A 25-second random run produced no side drains.
 - Sealed side outlanes, with a forced centre drain still starting the ball-countdown and game-over flow.
 - Glass-ceiling collision and table-escape recovery: a ball popped upward stays under the glass; a ball that leaves the cabinet is returned to the railgun without losing a ball.
+- Hard inner-face boundary and lower-side backstops: 60 units/s test shots into the left, right and top walls stay inside the table.
+- A 30-second aggressive random-flipper run recorded no out-of-table ball positions and no floor fall-through.
 - Upright cylinder colliders for the plasma cores and pegs, and inward/up-table slingshot snap kicks.
 - Automatic anti-trap recovery after 3.5 s of no progress, and manual recovery via **R** and the **RECOVER STUCK BALL** button, with score and ball count preserved.
 - Three-ball game over, auto-archive, final summary and leaderboard rank.

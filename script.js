@@ -1743,6 +1743,21 @@
     ceilingBody.position.set(0, 2.8, 0);
     ceilingBody.userData = { kind: "glass" };
     world.addBody(ceilingBody);
+
+    // Solid physics backstops behind the lower side seals. If a fast ball ever
+    // squeezes past a thin wall, these blocks stop it long before the cabinet
+    // edge. The right block must stay out of the shooter lane.
+    var leftBackstop = new CANNON.Body({ mass: 0, material: phys.wall });
+    leftBackstop.addShape(new CANNON.Box(new CANNON.Vec3(0.93, 0.65, 1.225)));
+    leftBackstop.position.set(-3.98, 0.65, 8.475);
+    leftBackstop.userData = { kind: "wall" };
+    world.addBody(leftBackstop);
+
+    var rightBackstop = new CANNON.Body({ mass: 0, material: phys.wall });
+    rightBackstop.addShape(new CANNON.Box(new CANNON.Vec3(0.24, 0.65, 1.225)));
+    rightBackstop.position.set(3.24, 0.65, 8.475);
+    rightBackstop.userData = { kind: "wall" };
+    world.addBody(rightBackstop);
   }
 
   function addStaticBox(hx, hy, hz, x, y, z, material, rotY, userData) {
@@ -3016,14 +3031,45 @@
       return;
     }
 
+    // Clamp before integration as well as after it, so a very fast flipper
+    // impulse cannot carry the ball through a collider in a single step.
+    if (ball && ball.body.type === CANNON.Body.DYNAMIC && game.phase === "play") {
+      var preSpeed = ball.body.velocity.length();
+      if (preSpeed > 22) ball.body.velocity.scale(22 / preSpeed, ball.body.velocity);
+    }
+
     world.step(dt);
 
     if (ball && game.phase === "play") {
       var p = ball.body.position;
       var v = ball.body.velocity;
+
+      // Hard cabinet boundary. This catches any fast ball that squeezes
+      // through a thin collider before it can visibly leave the table.
+      var minX = -4.58, maxX = 4.58, minZ = -10.45;
+      var bounced = false;
+      if (p.x < minX) {
+        p.x = minX;
+        if (v.x < 0) v.x = Math.abs(v.x) * 0.65;
+        bounced = true;
+      } else if (p.x > maxX) {
+        p.x = maxX;
+        if (v.x > 0) v.x = -Math.abs(v.x) * 0.65;
+        bounced = true;
+      }
+      if (p.z < minZ) {
+        p.z = minZ;
+        if (v.z < 0) v.z = Math.abs(v.z) * 0.65;
+        bounced = true;
+      }
+      if (bounced) {
+        ball.body.aabbNeedsUpdate = true;
+        burstSparks(p.x, p.y + 0.1, p.z, 0x8fdfff, 6, 2.4);
+      }
+
       // Hard speed clamp prevents tunnelling at 120 Hz.
       var speed = v.length();
-      if (speed > 28) v.scale(28 / speed, v);
+      if (speed > 22) v.scale(22 / speed, v);
 
       var outside = p.y < -2.5 || Math.abs(p.x) > 6.4 || p.z > 12.4 || p.z < -12.4;
       var inDrain = p.x < 3.55 && p.z > 9.7 && p.y < 1.6;

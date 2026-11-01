@@ -4,8 +4,8 @@
 | --- | --- |
 | Project | NEON HORIZON 2088 — Cyberpunk 3D Pinball Studio (`neon-horizon-2088`) |
 | Started | 2026-11-01 03:47:45 UTC |
-| Packaged | 2026-11-01 05:15:53 UTC |
-| Duration | **1h 28m 7s** (5,287 seconds) |
+| Packaged | 2026-11-01 05:49:08 UTC |
+| Duration | **2h 1m 22s** (7,282 seconds) |
 | Harness | OpenCode 2.2.5 |
 | Model | DeepSeek V4.1 Flash (`opencode-go/deepseek-v4.1-flash`) |
 | Session | `ses_e6ac7942effe0GS7Yi86hbJntl` |
@@ -16,15 +16,15 @@
 
 | Metric | Tokens |
 | --- | ---: |
-| Input | 642,355 |
-| Output | 159,876 |
-| Reasoning | 189,234 |
-| **Total (input + output + reasoning)** | **991,465** |
-| Cache read | 81,980,288 |
+| Input | 673,032 |
+| Output | 167,539 |
+| Reasoning | 207,638 |
+| **Total (input + output + reasoning)** | **1,048,209** |
+| Cache read | 90,040,064 |
 | Cache write | 1,218 |
-| Total including cache | 82,972,971 |
+| Total including cache | 91,089,491 |
 
-> Snapshot taken from the OpenCode session record when the project was packaged at 2026-11-01 05:15:53 UTC. The final commit, push, Pages verification and closing response happen outside this snapshot, so the live session totals will be marginally higher. Total cost reported by the session: **$0.00**.
+> Snapshot taken from the OpenCode session record when the project was packaged at 2026-11-01 05:49:08 UTC. The final commit, push, Pages verification and closing response happen outside this snapshot, so the live session totals will be marginally higher. Total cost reported by the session: **$0.00**.
 
 ## What was built
 
@@ -41,6 +41,8 @@
 - Dual kinematic flippers with pivots, angular velocity transfer, neon edges and key/touch mapping.
 - A real lower third based on the standard Italian-bottom layout: inward/up-table slingshot snap kicks, inlane return guides, outlane guide posts and sealed side lanes. Only the centre flipper gap drains.
 - Bouncy side walls (0.8 restitution) so the ball rebounds off the left and right rails instead of sticking.
+
+- A hard inner-face cabinet boundary clamps and reflects fast balls at the left/right/top rails, and solid lower-side backstops sit behind the side seals. A pre/post-step 22-unit speed clamp prevents tunnelling.
 - A glass-ceiling collider that keeps hard flipper or bumper pops on the table; a ball that leaves the cabinet is recovered to the railgun without losing a ball.
 - Chrome fusion ball with a generated reflection environment, dynamic glow, point light and comet trail.
 - Outlane-side return guides and sealed side lanes, plus pegs, drain detection and 120 Hz fixed-step simulation.
@@ -77,6 +79,8 @@
   - callsign, audio mute and leaderboard persistence,
   - mobile touch launch and touch flippers,
   - viewport resize 1600×1000 → 768×1024 → 390×844 → 320×568,
+  - 60 units/s test shots into the left, right and top walls stay inside the table,
+  - a 30-second aggressive random-flipper run with no out-of-table ball or floor fall-through,
   - 25-second random run with no side drains,
   - **0** uncaught exceptions and **0** console errors in the final run.
 - Screenshots: `screenshot.png` (1600×1000), `screenshot-mobile.png` (390×844 @2×), `screenshot-start.png` (1600×1000).
@@ -87,8 +91,8 @@
 | --- | ---: |
 | `index.html` | 14,025 bytes |
 | `style.css` | 44,081 bytes |
-| `script.js` | 129,844 bytes |
-| `README.md` | 19,728 bytes |
+| `script.js` | 131,747 bytes |
+| `README.md` | 20,104 bytes |
 | `screenshot.png` | 841,136 bytes |
 | `screenshot-mobile.png` | 779,331 bytes |
 | `screenshot-start.png` | 568,146 bytes |

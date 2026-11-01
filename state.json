@@ -4,19 +4,19 @@
   "description": "A complete, production-ready interactive 3D cyberpunk pinball game in vanilla HTML/CSS/ES6, rendered with Three.js r128 and simulated with Cannon.js 0.6.2.",
   "build": {
     "startedAt": "2026-11-01T03:47:45Z",
-    "completedAt": "2026-11-01T05:15:53Z",
-    "durationSeconds": 5287,
-    "durationHuman": "1h 28m 7s",
+    "completedAt": "2026-11-01T05:49:08Z",
+    "durationSeconds": 7282,
+    "durationHuman": "2h 1m 22s",
     "timezone": "UTC"
   },
   "tokens": {
-    "input": 642355,
-    "output": 159876,
-    "reasoning": 189234,
-    "cacheRead": 81980288,
+    "input": 673032,
+    "output": 167539,
+    "reasoning": 207638,
+    "cacheRead": 90040064,
     "cacheWrite": 1218,
-    "total": 991465,
-    "totalWithCache": 82972971,
+    "total": 1048209,
+    "totalWithCache": 91089491,
     "note": "Snapshot from the OpenCode session record when the project was packaged. total = input + output + reasoning. Cache reads/writes are reported separately because they are context-usage figures and are not added to the model-token total."
   },
   "cost": {
@@ -70,7 +70,10 @@
       "return guides that feed the flippers",
       "sealed side outlanes with centre-only drain",
       "upright cylinder colliders for cores and pegs",
-      "table-escape recovery"
+      "table-escape recovery",
+      "hard inner-face cabinet boundary",
+      "solid lower-side physics backstops",
+      "pre/post-step 22-unit speed clamp"
     ],
     "controls": [
       "Space hold/release launch",
@@ -108,7 +111,9 @@
       "table-escape recovery preserves the ball",
       "inward/up-table slingshot snap kick",
       "upright cylinder colliders for cores and pegs",
-      "25-second random run with no side drains"
+      "25-second random run with no side drains",
+      "60 units/s test shots stay inside the left/right/top walls",
+      "30-second aggressive random run with no out-of-table ball or floor fall-through"
     ],
     "screenshots": [
       "screenshot.png (1600x1000)",
@@ -126,12 +131,12 @@
       "lines": 1937
     },
     "script.js": {
-      "bytes": 129844,
-      "lines": 3712
+      "bytes": 131747,
+      "lines": 3758
     },
     "README.md": {
-      "bytes": 19728,
-      "lines": 367
+      "bytes": 20104,
+      "lines": 369
     },
     "screenshot.png": {
       "bytes": 841136,
