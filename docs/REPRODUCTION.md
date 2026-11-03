@@ -108,7 +108,7 @@ node scripts/check.mjs
 | `scripts/check.mjs` | Dependency-free release checker |
 | `docs/` | Architecture, reproduction, testing, deployment, social card |
 | `skills/neon-horizon-2088/` | Reusable skill and byte-identical source template |
-| `assets/` | Not present; all art is generated |
+| `assets/` | No runtime art directory; the game generates textures and audio, and `favicon.svg` is the only static icon |
 | `state.json`, `STATE.md` | Historical build metrics and verification record |
 | `.nojekyll` | Pages passthrough |
 
@@ -307,7 +307,7 @@ Push `main`; enable Pages from `main` / `/`; verify the live root, `script.js` a
 | --- | --- | --- |
 | Table size | 10 × 22 units | Chosen so the 10-unit width leaves a readable shooter lane and the 22-unit length fits the camera framing; all lane coordinates derive from it |
 | Tilt | 6.6° | Visual compromise: enough slope for gravity-driven play, shallow enough that the cabinet reads as a table rather than a ramp |
-| Ball radius | 0.32 | Slightly over 1/32 of the table width; fits the 0.36-wide shooter lane and the centre flipper gap |
+| Ball radius | 0.32 | Slightly over 1/32 of the table width; fits between the lane divider at `x = 3.6` and the outer wall at `x = 5.06`, and through the centre flipper gap |
 | Ball mass | 0.25 | Keeps the plunger impulse in the 5–11 units/s range |
 | Fixed step | 1/120 s | The solver was unstable/tunnelling at 60 Hz with 22 units/s speeds; 120 Hz plus substepping was the smallest change that held |
 | Speed clamp | 22 units/s | Derived from failed 60 units/s stress shots: above roughly 20 units/s the ball could cross thin walls between steps |

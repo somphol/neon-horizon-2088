@@ -91,7 +91,7 @@ headless Chrome; it is not re-executed by `scripts/check.mjs`.
 | 1 | Boot | load `/` | Hero overlay, HUD live, no console exception | pass |
 | 2 | Start | enter callsign, submit | Start overlay leaves; 3 balls; phase `ready` | pass |
 | 3 | Charge/launch | hold Space ~1.4 s, release | Charge reaches ~100%, ball travels up the shooter lane, phase `play` | pass |
-| 4 | Launch pad | hold the **LAUNCH** pad, drag up, release | Same as #3; touch pointer events | pass |
+| 4 | Launch pad | hold the **LAUNCH** pad, drag up, release | Same as #3; touch pointer events | hold/release pass; drag boost not separately measured |
 | 5 | Left flipper | `Z` or `←` | Left arm sweeps up; ball redirects | pass |
 | 6 | Right flipper | `/` or `→` | Right arm sweeps up; ball redirects | pass |
 | 7 | Touch flippers | tap/click canvas halves or flip pads | Corresponding flipper fires | pass |
@@ -108,7 +108,7 @@ headless Chrome; it is not re-executed by `scripts/check.mjs`.
 | 18 | Wall stress | 60 units/s shots at left, right, top, lower-side walls | Left/right/top stay within `x ±4.58`, `z ≥ -10.45`; a lower-seam escape recovers to the railgun | pass |
 | 19 | Target re-arm | park a ball on the bank, clear it | Re-arm deferred until the ball leaves | not separately verified (guard in `resetTargets`) |
 | 20 | Export | **SAVE HIGH SCORE** | Downloads `neon_horizon_scores.json`; valid JSON | pass |
-| 21 | Import | clear storage, load the export | Entries merge, no duplicates, best updates | pass |
+| 21 | Import | load an archive with valid and invalid entries | Valid entries merge; negative/markup entries are sanitised or rejected | pass |
 | 22 | Persistence | reload after a session | Callsign, mute and leaderboard survive; a fresh table starts | pass |
 | 23 | Mute | `M` or audio button | Master muted/unmuted; preference persists | pass |
 | 24 | Audio lifecycle | first gesture, then hide the tab | Context starts; ambient drops on hidden and returns | context pass; visibility not separately verified |

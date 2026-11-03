@@ -197,7 +197,7 @@ animate(now):
   updateVisuals(dt); renderer.render(scene, camera)
 ```
 
-`fixedUpdate` order: flip targets/cooldowns → `updateCharge` → timers → `updateRail` →
+`fixedUpdate` order: `updateFlippers` → `updateCharge` → cooldown timers → `updateRail` →
 clamp pre-step speed to 22 → `world.step(1/120)` → clamp post-step speed → hard-boundary
 bounce → drain/outside/recovery checks → sync mesh transform. While the ball is on a
 loop rail its body is kinematic, so the solver still steps but the position is driven by

@@ -128,8 +128,9 @@ session is resumed.
 - **Collision callbacks run inside `world.step`.** They must be cheap, must guard the ball
   and phase, and must use cooldowns rather than mutating scene arrays during iteration.
   An exception here repeats every step.
-- **Procedural assets only.** The game uses no image, audio or model assets: textures are
-  drawn to canvases and every sound is synthesised. Do not add runtime asset downloads.
+- **Procedural assets only.** The game uses no runtime image, audio or model assets:
+  textures are drawn to canvases and every sound is synthesised. `favicon.svg` is the
+  only static icon. Do not add runtime asset downloads.
 - **Score archives are untrusted input.** `sanitizeScoreEntry` clamps values, strips markup
   from names and caps length; imports are de-duplicated by `name|score|date`. Keep that
   boundary if the import format changes.
@@ -182,5 +183,6 @@ session is resumed.
   [LICENSE](LICENSE).
 - **Publishing rules:** keep Pages on `main` / root and keep the repository public (MIT).
   If the repository is renamed, update the absolute URLs in `index.html` (canonical, OG
-  and Twitter tags), `README.md`, `AGENTS.md` and `state.json`. Do not commit credentials,
+  and Twitter tags), `README.md`, `AGENTS.md`, `docs/DEPLOYMENT.md`,
+  `skills/neon-horizon-2088/ATTRIBUTION.md` and `state.json`. Do not commit credentials,
   tokens or local secret files.

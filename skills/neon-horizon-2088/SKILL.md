@@ -232,5 +232,5 @@ flippers, bumpers, targets, loops, slingshots, drain, recovery, export/import,
 persistence, mobile layout and wall stress shots.
 
 Stop and fix before shipping if: the self-test is below 16/16, the console logs
-exceptions during a 30-second run, a 60 units/s shot leaves the cabinet, or the ball can
-wedge for more than 3.5 s without recovery.
+exceptions during a 30-second run, a 60 units/s shot leaves the cabinet without being
+recovered, or the ball can wedge for more than 3.5 s without recovery.
