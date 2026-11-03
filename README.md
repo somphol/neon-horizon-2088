@@ -385,6 +385,12 @@ documentation fixes alike. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and th
 | Document | Purpose |
 | --- | --- |
 | [README.md](README.md) | Overview, setup, controls, and architecture |
+| [AGENTS.md](AGENTS.md) | Handoff for the next maintainer or AI agent |
+| [docs/REPRODUCTION.md](docs/REPRODUCTION.md) | Rebuild and verification book |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Module map, physics and rendering algorithms |
+| [docs/TESTING.md](docs/TESTING.md) | Verified matrix and honest gaps |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | GitHub Pages operations and rollback |
+| [skills/neon-horizon-2088/SKILL.md](skills/neon-horizon-2088/SKILL.md) | Reusable build skill and source template |
 | [CHANGELOG.md](CHANGELOG.md) | Notable changes and release history |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Local workflow, constraints, and pull request checks |
 | [SECURITY.md](SECURITY.md) | Supported versions and private vulnerability reporting |
